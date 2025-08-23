@@ -1,0 +1,495 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>IELTS Vocabulary Hangman</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            background: linear-gradient(135deg, #6e8efb, #a777e3);
+            padding: 20px;
+            color: #333;
+        }
+        
+        .container {
+            width: 100%;
+            max-width: 800px;
+            background: white;
+            border-radius: 16px;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
+            overflow: hidden;
+        }
+        
+        header {
+            background: #5a67d8;
+            color: white;
+            padding: 20px;
+            text-align: center;
+        }
+        
+        h1 {
+            font-size: 28px;
+            margin-bottom: 10px;
+        }
+        
+        .instructions {
+            background: #f8f9fa;
+            padding: 15px;
+            border-bottom: 1px solid #e9ecef;
+            font-size: 14px;
+        }
+        
+        .game-area {
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        
+        .category-selector {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+        
+        select, button {
+            padding: 10px 15px;
+            border-radius: 6px;
+            border: 1px solid #ddd;
+            font-size: 16px;
+        }
+        
+        button {
+            background: #6e8efb;
+            color: white;
+            border: none;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+        
+        button:hover {
+            background: #5a7de3;
+        }
+        
+        button:disabled {
+            background: #cccccc;
+            cursor: not-allowed;
+        }
+        
+        #hint {
+            font-style: italic;
+            color: #666;
+            margin: 15px 0;
+            min-height: 24px;
+            text-align: center;
+            padding: 10px;
+            background: #f8f9fa;
+            border-radius: 6px;
+            width: 100%;
+        }
+        
+        .hangman-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            width: 100%;
+            margin: 15px 0;
+        }
+        
+        .hangman-drawing {
+            margin: 15px auto;
+            height: 180px;
+            font-family: monospace;
+            white-space: pre;
+            font-size: 16px;
+            line-height: 1.4;
+            text-align: center;
+        }
+        
+        #word-display {
+            font-size: 32px;
+            letter-spacing: 10px;
+            margin: 20px 0;
+            font-weight: bold;
+            color: #333;
+            min-height: 40px;
+            text-align: center;
+            padding: 10px;
+            background: #f8f9fa;
+            border-radius: 6px;
+            width: 100%;
+        }
+        
+        #letters {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 8px;
+            margin: 20px 0;
+            width: 100%;
+            max-width: 600px;
+        }
+        
+        #letters button {
+            width: 40px;
+            height: 40px;
+            font-size: 18px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .game-info {
+            display: flex;
+            justify-content: space-around;
+            width: 100%;
+            margin: 20px 0;
+            font-size: 18px;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+        
+        .game-info > div {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 8px;
+            min-width: 150px;
+            text-align: center;
+        }
+        
+        #reset {
+            padding: 12px 25px;
+            font-size: 18px;
+            margin: 15px 0;
+        }
+        
+        .hidden {
+            display: none;
+        }
+        
+        .correct {
+            background-color: #d4edda !important;
+            color: #155724 !important;
+            border-color: #c3e6cb !important;
+        }
+        
+        .incorrect {
+            background-color: #f8d7da !important;
+            color: #721c24 !important;
+            border-color: #f5c6cb !important;
+        }
+        
+        footer {
+            text-align: center;
+            padding: 20px;
+            background: #f8f9fa;
+            border-top: 1px solid #e9ecef;
+            font-size: 14px;
+            color: #6c757d;
+        }
+        
+        @media (max-width: 600px) {
+            h1 {
+                font-size: 24px;
+            }
+            
+            #word-display {
+                font-size: 24px;
+                letter-spacing: 6px;
+            }
+            
+            .game-info {
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            .game-info > div {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>IELTS Vocabulary Hangman</h1>
+            <p>Test your vocabulary for IELTS preparation</p>
+        </header>
+        
+        <div class="instructions">
+            <p>Select a category and start guessing letters. You have 6 attempts to guess the word!</p>
+        </div>
+        
+        <div class="game-area">
+            <div class="category-selector">
+                <label for="mode">Choose Test Mode:</label>
+                <select id="mode">
+                    <option value="academic">Academic</option>
+                    <option value="general">General</option>
+                </select>
+                <button id="startBtn">Start Game</button>
+            </div>
+            
+            <div id="game" class="hidden">
+                <div id="hint"></div>
+                
+                <div class="hangman-container">
+                    <div class="hangman-drawing" id="hangman-drawing"></div>
+                    <div id="word-display"></div>
+                </div>
+                
+                <div id="letters"></div>
+                
+                <div class="game-info">
+                    <div>
+                        <p>Wrong guesses: <span id="wrong-letters"></span></p>
+                    </div>
+                    <div>
+                        <p>Attempts left: <span id="attempts">6</span></p>
+                    </div>
+                </div>
+                
+                <button id="reset">New Word</button>
+            </div>
+        </div>
+        
+        <footer>
+            <p>Designed for IELTS preparation - Deploy to GitHub Pages with a single HTML file</p>
+        </footer>
+    </div>
+
+    <script>
+        // Word data with hints
+        const wordData = {
+            "academic": [
+                {word: "analyze", hint: "Examine in detail"},
+                {word: "assess", hint: "Evaluate or estimate"},
+                {word: "concept", hint: "Abstract idea or general notion"},
+                {word: "derive", hint: "Obtain something from a specified source"},
+                {word: "establish", hint: "Set up on a firm or permanent basis"},
+                {word: "interpret", hint: "Explain the meaning of something"},
+                {word: "method", hint: "A particular procedure for accomplishing something"},
+                {word: "principle", hint: "Fundamental truth or proposition"},
+                {word: "structure", hint: "The arrangement of and relations between parts"},
+                {word: "theory", hint: "A system of ideas intended to explain something"}
+            ],
+            "general": [
+                {word: "holiday", hint: "A day of festivity or recreation"},
+                {word: "friendship", hint: "A relationship between friends"},
+                {word: "shopping", hint: "The activity of buying goods from stores"},
+                {word: "weekend", hint: "Saturday and Sunday"},
+                {word: "family", hint: "A group consisting of parents and children"}
+            ]
+        };
+
+        // Hangman drawing stages
+        const hangmanStages = [
+            `
+         -----
+         |   |
+             |
+             |
+             |
+             |
+      ----------
+            `,
+            `
+         -----
+         |   |
+         O   |
+             |
+             |
+             |
+      ----------
+            `,
+            `
+         -----
+         |   |
+         O   |
+         |   |
+             |
+             |
+      ----------
+            `,
+            `
+         -----
+         |   |
+         O   |
+        /|   |
+             |
+             |
+      ----------
+            `,
+            `
+         -----
+         |   |
+         O   |
+        /|\\  |
+             |
+             |
+      ----------
+            `,
+            `
+         -----
+         |   |
+         O   |
+        /|\\  |
+        /    |
+             |
+      ----------
+            `,
+            `
+         -----
+         |   |
+         O   |
+        /|\\  |
+        / \\  |
+             |
+      ----------
+            `
+        ];
+
+        // Game variables
+        let chosenWord = "";
+        let hint = "";
+        let attempts = 6;
+        let guessedLetters = [];
+        let currentMode = "academic";
+
+        // DOM elements
+        const wordDisplay = document.getElementById("word-display");
+        const wrongLettersElement = document.getElementById("wrong-letters");
+        const attemptsDisplay = document.getElementById("attempts");
+        const hintDisplay = document.getElementById("hint");
+        const resetButton = document.getElementById("reset");
+        const lettersContainer = document.getElementById("letters");
+        const startBtn = document.getElementById("startBtn");
+        const modeSelect = document.getElementById("mode");
+        const gameElement = document.getElementById("game");
+        const hangmanDrawing = document.getElementById("hangman-drawing");
+
+        // Initialize the game
+        function initGame() {
+            startBtn.addEventListener("click", startGame);
+            resetButton.addEventListener("click", startGame);
+            
+            // Add keyboard support
+            document.addEventListener("keydown", handleKeyPress);
+        }
+
+        function startGame() {
+            currentMode = modeSelect.value;
+            const words = wordData[currentMode];
+            const randomIndex = Math.floor(Math.random() * words.length);
+            const selection = words[randomIndex];
+            
+            chosenWord = selection.word.toUpperCase();
+            hint = selection.hint;
+            attempts = 6;
+            guessedLetters = [];
+            
+            // Update UI
+            hintDisplay.textContent = "Hint: " + hint;
+            attemptsDisplay.textContent = attempts;
+            wrongLettersElement.textContent = "";
+            hangmanDrawing.textContent = hangmanStages[0];
+            
+            displayWord();
+            createLetterButtons();
+            
+            // Show game, hide category selector
+            gameElement.classList.remove("hidden");
+            startBtn.textContent = "Change Category";
+        }
+
+        function displayWord() {
+            const display = chosenWord
+                .split("")
+                .map(letter => (guessedLetters.includes(letter) ? letter : "_"))
+                .join(" ");
+            wordDisplay.textContent = display;
+
+            // Check if player has won
+            if (!display.includes("_")) {
+                setTimeout(() => {
+                    alert("🎉 Congratulations! You guessed the word: " + chosenWord);
+                    startGame();
+                }, 500);
+            }
+        }
+
+        function createLetterButtons() {
+            lettersContainer.innerHTML = "";
+            for (let i = 65; i <= 90; i++) {
+                const letter = String.fromCharCode(i);
+                const button = document.createElement("button");
+                button.textContent = letter;
+                button.addEventListener("click", () => guessLetter(letter, button));
+                lettersContainer.appendChild(button);
+            }
+        }
+
+        function guessLetter(letter, button) {
+            button.disabled = true;
+            
+            if (chosenWord.includes(letter)) {
+                // Correct guess
+                guessedLetters.push(letter);
+                button.classList.add("correct");
+                displayWord();
+            } else {
+                // Incorrect guess
+                attempts--;
+                attemptsDisplay.textContent = attempts;
+                wrongLettersElement.textContent += letter + " ";
+                button.classList.add("incorrect");
+                
+                // Update hangman drawing
+                hangmanDrawing.textContent = hangmanStages[6 - attempts];
+                
+                // Check if player has lost
+                if (attempts <= 0) {
+                    setTimeout(() => {
+                        alert("💀 Game over! The word was: " + chosenWord);
+                        startGame();
+                    }, 500);
+                }
+            }
+        }
+
+        function handleKeyPress(e) {
+            // Only handle key presses if game is active
+            if (gameElement.classList.contains("hidden")) return;
+            
+            // Check if key is a letter (A-Z or a-z)
+            if (e.key.length === 1 && e.key.match(/[a-z]/i)) {
+                const letter = e.key.toUpperCase();
+                const button = Array.from(lettersContainer.children).find(
+                    btn => btn.textContent === letter && !btn.disabled
+                );
+                
+                if (button) {
+                    guessLetter(letter, button);
+                }
+            }
+        }
+
+        // Initialize the game when page loads
+        window.onload = initGame;
+    </script>
+</body>
+</html>
