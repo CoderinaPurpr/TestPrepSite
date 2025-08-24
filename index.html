@@ -18,49 +18,51 @@
             align-items: center;
             min-height: 100vh;
             background: linear-gradient(135deg, #6e8efb, #a777e3);
-            padding: 20px;
+            padding: 15px;
             color: #333;
+            overflow: hidden;
         }
         
         .container {
             width: 100%;
             max-width: 800px;
+            height: 95vh;
             max-height: 95vh;
             background: white;
             border-radius: 16px;
             box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
-            overflow: hidden;
             display: flex;
             flex-direction: column;
+            overflow: hidden;
         }
         
         header {
             background: #5a67d8;
             color: white;
-            padding: 15px 20px;
+            padding: 12px 20px;
             text-align: center;
             flex-shrink: 0;
         }
         
         h1 {
-            font-size: 24px;
+            font-size: 22px;
             margin-bottom: 5px;
         }
         
         .instructions {
             background: #f8f9fa;
-            padding: 10px 15px;
+            padding: 8px 15px;
             border-bottom: 1px solid #e9ecef;
-            font-size: 14px;
+            font-size: 13px;
             flex-shrink: 0;
         }
         
         .game-area {
-            padding: 15px 20px;
+            padding: 12px 20px;
             display: flex;
             flex-direction: column;
             align-items: center;
-            overflow-y: auto;
+            overflow: hidden;
             flex-grow: 1;
         }
         
@@ -68,17 +70,17 @@
             display: flex;
             justify-content: center;
             align-items: center;
-            gap: 10px;
-            margin-bottom: 15px;
+            gap: 8px;
+            margin-bottom: 12px;
             flex-wrap: wrap;
             flex-shrink: 0;
         }
         
         select, button {
-            padding: 8px 12px;
+            padding: 7px 10px;
             border-radius: 6px;
             border: 1px solid #ddd;
-            font-size: 14px;
+            font-size: 13px;
         }
         
         button {
@@ -101,14 +103,15 @@
         #hint {
             font-style: italic;
             color: #666;
-            margin: 10px 0;
-            min-height: 20px;
+            margin: 8px 0;
+            min-height: 19px;
             text-align: center;
-            padding: 8px;
+            padding: 7px;
             background: #f8f9fa;
             border-radius: 6px;
             width: 100%;
             flex-shrink: 0;
+            font-size: 14px;
         }
         
         .hangman-container {
@@ -116,30 +119,30 @@
             flex-direction: column;
             align-items: center;
             width: 100%;
-            margin: 10px 0;
+            margin: 8px 0;
             flex-shrink: 0;
         }
         
         .hangman-drawing {
-            margin: 10px auto;
-            height: 120px;
+            margin: 8px auto;
+            height: 100px;
             font-family: monospace;
             white-space: pre;
-            font-size: 14px;
-            line-height: 1.2;
+            font-size: 12px;
+            line-height: 1.1;
             text-align: center;
             flex-shrink: 0;
         }
         
         #word-display {
-            font-size: 24px;
-            letter-spacing: 8px;
-            margin: 15px 0;
+            font-size: 22px;
+            letter-spacing: 7px;
+            margin: 12px 0;
             font-weight: bold;
             color: #333;
-            min-height: 35px;
+            min-height: 32px;
             text-align: center;
-            padding: 8px;
+            padding: 7px;
             background: #f8f9fa;
             border-radius: 6px;
             width: 100%;
@@ -150,45 +153,47 @@
             display: flex;
             flex-wrap: wrap;
             justify-content: center;
-            gap: 6px;
-            margin: 15px 0;
+            gap: 5px;
+            margin: 12px 0;
             width: 100%;
             max-width: 600px;
             flex-shrink: 0;
         }
         
         #letters button {
-            width: 35px;
-            height: 35px;
-            font-size: 16px;
+            width: 32px;
+            height: 32px;
+            font-size: 14px;
             display: flex;
             align-items: center;
             justify-content: center;
+            padding: 0;
         }
         
         .game-info {
             display: flex;
             justify-content: space-around;
             width: 100%;
-            margin: 15px 0;
-            font-size: 16px;
+            margin: 12px 0;
+            font-size: 15px;
             flex-wrap: wrap;
-            gap: 10px;
+            gap: 8px;
             flex-shrink: 0;
         }
         
         .game-info > div {
             background: #f8f9fa;
-            padding: 10px;
+            padding: 8px;
             border-radius: 8px;
-            min-width: 130px;
+            min-width: 120px;
             text-align: center;
+            font-size: 14px;
         }
         
         #reset {
-            padding: 10px 20px;
-            font-size: 16px;
-            margin: 10px 0;
+            padding: 8px 16px;
+            font-size: 14px;
+            margin: 8px 0;
             flex-shrink: 0;
         }
         
@@ -210,63 +215,122 @@
         
         footer {
             text-align: center;
-            padding: 15px;
+            padding: 10px;
             background: #f8f9fa;
             border-top: 1px solid #e9ecef;
-            font-size: 12px;
+            font-size: 11px;
             color: #6c757d;
             flex-shrink: 0;
         }
         
         @media (max-width: 600px) {
+            body {
+                padding: 10px;
+            }
+            
+            .container {
+                height: 98vh;
+                max-height: 98vh;
+            }
+            
             h1 {
                 font-size: 20px;
             }
             
             #word-display {
-                font-size: 20px;
+                font-size: 18px;
                 letter-spacing: 5px;
+                margin: 8px 0;
             }
             
             .game-info {
                 flex-direction: column;
                 align-items: center;
+                margin: 8px 0;
             }
             
             .game-info > div {
                 width: 100%;
+                min-width: auto;
             }
             
             .hangman-drawing {
-                height: 100px;
-                font-size: 12px;
+                height: 80px;
+                font-size: 11px;
             }
             
             .category-selector {
                 flex-direction: column;
             }
-        }
-
-        @media (max-height: 700px) {
-            .hangman-drawing {
-                height: 90px;
+            
+            #letters button {
+                width: 28px;
+                height: 28px;
                 font-size: 12px;
             }
             
+            #hint {
+                font-size: 13px;
+                padding: 5px;
+            }
+        }
+
+        @media (max-height: 700px) {
+            .container {
+                height: 97vh;
+            }
+            
+            .hangman-drawing {
+                height: 70px;
+                font-size: 10px;
+            }
+            
             #word-display {
-                font-size: 20px;
-                margin: 10px 0;
+                font-size: 18px;
+                margin: 6px 0;
             }
             
             #letters {
-                gap: 4px;
-                margin: 10px 0;
+                gap: 3px;
+                margin: 8px 0;
             }
             
             #letters button {
-                width: 30px;
-                height: 30px;
-                font-size: 14px;
+                width: 26px;
+                height: 26px;
+                font-size: 12px;
+            }
+            
+            header {
+                padding: 8px 15px;
+            }
+            
+            h1 {
+                font-size: 20px;
+            }
+            
+            .instructions {
+                padding: 6px 12px;
+                font-size: 12px;
+            }
+        }
+
+        @media (max-height: 600px) {
+            .hangman-drawing {
+                height: 60px;
+            }
+            
+            #word-display {
+                font-size: 16px;
+            }
+            
+            .game-info {
+                font-size: 13px;
+            }
+            
+            .game-info > div {
+                padding: 6px;
+                font-size: 13px;
             }
         }
     </style>
