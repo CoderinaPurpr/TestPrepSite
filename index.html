@@ -5,6 +5,17 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>IELTS Vocabulary Hangman</title>
     <style>
+        :root {
+            --primary: #5a67d8;
+            --secondary: #6e8efb;
+            --accent: #a777e3;
+            --light: #f8f9fa;
+            --dark: #333;
+            --success: #28a745;
+            --danger: #dc3545;
+            --warning: #ffc107;
+        }
+        
         * {
             box-sizing: border-box;
             margin: 0;
@@ -17,9 +28,9 @@
             justify-content: center;
             align-items: center;
             min-height: 100vh;
-            background: linear-gradient(135deg, #6e8efb, #a777e3);
+            background: linear-gradient(135deg, var(--secondary), var(--accent));
             padding: 15px;
-            color: #333;
+            color: var(--dark);
         }
         
         .container {
@@ -32,19 +43,39 @@
         }
         
         header {
-            background: #5a67d8;
+            background: var(--primary);
             color: white;
             padding: 15px;
+            text-align: center;
+            position: relative;
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+        }
+        
+        .header-content {
+            flex: 1;
             text-align: center;
         }
         
         h1 {
             font-size: 22px;
             margin-bottom: 5px;
+            line-height: 1.2;
+        }
+        
+        .score-display {
+            background: rgba(255, 255, 255, 0.2);
+            padding: 5px 10px;
+            border-radius: 20px;
+            font-weight: bold;
+            min-width: 80px;
+            text-align: center;
+            margin-left: 10px;
         }
         
         .instructions {
-            background: #f8f9fa;
+            background: var(--light);
             padding: 10px 15px;
             border-bottom: 1px solid #e9ecef;
             font-size: 14px;
@@ -55,10 +86,9 @@
             padding: 15px;
         }
         
-        .category-selector {
+        .settings-panel {
             display: flex;
             justify-content: center;
-            align-items: center;
             gap: 10px;
             margin-bottom: 15px;
             flex-wrap: wrap;
@@ -72,20 +102,22 @@
         }
         
         button {
-            background: #6e8efb;
+            background: var(--secondary);
             color: white;
             border: none;
             cursor: pointer;
-            transition: background 0.3s;
+            transition: all 0.3s;
         }
         
         button:hover {
-            background: #5a7de3;
+            background: var(--primary);
+            transform: translateY(-2px);
         }
         
         button:disabled {
             background: #cccccc;
             cursor: not-allowed;
+            transform: none;
         }
         
         #hint {
@@ -94,7 +126,7 @@
             margin: 10px 0;
             text-align: center;
             padding: 8px;
-            background: #f8f9fa;
+            background: var(--light);
             border-radius: 6px;
         }
         
@@ -119,10 +151,10 @@
             font-size: 24px;
             letter-spacing: 8px;
             font-weight: bold;
-            color: #333;
+            color: var(--dark);
             text-align: center;
             padding: 10px;
-            background: #f8f9fa;
+            background: var(--light);
             border-radius: 6px;
             margin-bottom: 10px;
         }
@@ -153,19 +185,30 @@
         }
         
         .game-info > div {
-            background: #f8f9fa;
+            background: var(--light);
             padding: 10px;
             border-radius: 8px;
             text-align: center;
             min-width: 140px;
         }
         
-        #reset {
+        .action-buttons {
+            display: flex;
+            gap: 10px;
+        }
+        
+        .action-buttons button {
             padding: 10px 20px;
             font-size: 16px;
-            margin: 10px 0;
-            display: block;
-            width: 100%;
+            flex: 1;
+        }
+        
+        #hint-btn {
+            background: var(--accent);
+        }
+        
+        #reset {
+            background: var(--primary);
         }
         
         .hidden {
@@ -173,27 +216,80 @@
         }
         
         .correct {
-            background-color: #d4edda !important;
-            color: #155724 !important;
-            border-color: #c3e6cb !important;
+            background-color: var(--success) !important;
+            color: white !important;
         }
         
         .incorrect {
-            background-color: #f8d7da !important;
-            color: #721c24 !important;
-            border-color: #f5c6cb !important;
+            background-color: var(--danger) !important;
+            color: white !important;
         }
         
         footer {
             text-align: center;
             padding: 15px;
-            background: #f8f9fa;
+            background: var(--light);
             border-top: 1px solid #e9ecef;
             font-size: 12px;
             color: #6c757d;
         }
         
+        /* Modal styles */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            justify-content: center;
+            align-items: center;
+            z-index: 100;
+        }
+        
+        .modal-content {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            max-width: 400px;
+            width: 90%;
+            text-align: center;
+        }
+        
+        .modal h2 {
+            margin-bottom: 15px;
+            color: var(--primary);
+        }
+        
+        .modal button {
+            margin-top: 15px;
+        }
+        
+        /* Animation */
+        @keyframes bounce {
+            0%, 20%, 50%, 80%, 100% {transform: translateY(0);}
+            40% {transform: translateY(-10px);}
+            60% {transform: translateY(-5px);}
+        }
+        
+        .bounce {
+            animation: bounce 1s;
+        }
+        
         @media (max-width: 600px) {
+            header {
+                flex-direction: column;
+                align-items: center;
+                gap: 10px;
+            }
+            
+            .score-display {
+                margin-left: 0;
+                order: -1;
+                margin-bottom: 5px;
+            }
+            
             h1 {
                 font-size: 20px;
             }
@@ -217,38 +313,8 @@
                 font-size: 12px;
             }
             
-            .category-selector {
+            .settings-panel {
                 flex-direction: column;
-            }
-        }
-
-        @media (max-height: 700px) {
-            .hangman-drawing {
-                height: 70px;
-                font-size: 11px;
-            }
-            
-            #word-display {
-                font-size: 18px;
-            }
-            
-            #letters button {
-                width: 28px;
-                height: 28px;
-                font-size: 12px;
-            }
-            
-            header {
-                padding: 10px;
-            }
-            
-            h1 {
-                font-size: 20px;
-            }
-            
-            .instructions {
-                padding: 8px 12px;
-                font-size: 13px;
             }
         }
     </style>
@@ -256,20 +322,27 @@
 <body>
     <div class="container">
         <header>
-            <h1>IELTS Vocabulary Hangman</h1>
-            <p>Test your vocabulary for IELTS preparation</p>
+            <div class="header-content">
+                <h1>IELTS Vocabulary Hangman</h1>
+                <p>Test your vocabulary for IELTS preparation</p>
+            </div>
+            <div class="score-display">Score: <span id="score">0</span></div>
         </header>
         
         <div class="instructions">
-            <p>Select a category and start guessing letters. You have 6 attempts to guess the word!</p>
+            <p>Select a category and difficulty, then start guessing letters!</p>
         </div>
         
         <div class="game-area">
-            <div class="category-selector">
-                <label for="mode">Choose Test Mode:</label>
+            <div class="settings-panel">
                 <select id="mode">
                     <option value="academic">Academic</option>
                     <option value="general">General</option>
+                </select>
+                <select id="difficulty">
+                    <option value="easy">Easy</option>
+                    <option value="medium" selected>Medium</option>
+                    <option value="hard">Hard</option>
                 </select>
                 <button id="startBtn">Start Game</button>
             </div>
@@ -293,37 +366,76 @@
                     </div>
                 </div>
                 
-                <button id="reset">New Word</button>
+                <div class="action-buttons">
+                    <button id="hint-btn">Hint</button>
+                    <button id="reset">New Word</button>
+                </div>
             </div>
         </div>
         
         <footer>
-            <p>Designed for IELTS preparation - Optimized for all screen sizes</p>
+            <p>Designed for IELTS preparation - Expand your vocabulary!</p>
         </footer>
     </div>
 
+    <!-- Modal for game messages -->
+    <div id="message-modal" class="modal">
+        <div class="modal-content">
+            <h2 id="modal-title">Congratulations!</h2>
+            <p id="modal-message">You guessed the word correctly!</p>
+            <button id="modal-button">Continue</button>
+        </div>
+    </div>
+
     <script>
-        // Word data with hints
+        // Enhanced word data with difficulty levels and definitions
         const wordData = {
-            "academic": [
-                {word: "analyze", hint: "Examine in detail"},
-                {word: "assess", hint: "Evaluate or estimate"},
-                {word: "concept", hint: "Abstract idea or general notion"},
-                {word: "derive", hint: "Obtain something from a specified source"},
-                {word: "establish", hint: "Set up on a firm or permanent basis"},
-                {word: "interpret", hint: "Explain the meaning of something"},
-                {word: "method", hint: "A particular procedure for accomplishing something"},
-                {word: "principle", hint: "Fundamental truth or proposition"},
-                {word: "structure", hint: "The arrangement of and relations between parts"},
-                {word: "theory", hint: "A system of ideas intended to explain something"}
-            ],
-            "general": [
-                {word: "holiday", hint: "A day of festivity or recreation"},
-                {word: "friendship", hint: "A relationship between friends"},
-                {word: "shopping", hint: "The activity of buying goods from stores"},
-                {word: "weekend", hint: "Saturday and Sunday"},
-                {word: "family", hint: "A group consisting of parents and children"}
-            ]
+            "academic": {
+                "easy": [
+                    {word: "analyze", hint: "Examine in detail", definition: "To examine methodically and in detail."},
+                    {word: "assess", hint: "Evaluate or estimate", definition: "To evaluate or estimate the nature, ability, or quality of."},
+                    {word: "concept", hint: "Abstract idea", definition: "An abstract idea or general notion."},
+                    {word: "data", hint: "Facts and statistics", definition: "Facts and statistics collected together for reference or analysis."},
+                    {word: "evidence", hint: "Proof or indication", definition: "The available body of facts indicating whether a belief is true."}
+                ],
+                "medium": [
+                    {word: "derive", hint: "Obtain from a source", definition: "To obtain something from a specified source."},
+                    {word: "establish", hint: "Set up permanently", definition: "To set up on a firm or permanent basis."},
+                    {word: "interpret", hint: "Explain meaning", definition: "To explain the meaning of information or actions."},
+                    {word: "method", hint: "Systematic procedure", definition: "A particular procedure for accomplishing something."},
+                    {word: "principle", hint: "Fundamental truth", definition: "A fundamental truth or proposition serving as a foundation for belief."}
+                ],
+                "hard": [
+                    {word: "structure", hint: "Arrangement of parts", definition: "The arrangement of and relations between the parts of something."},
+                    {word: "theory", hint: "System of ideas", definition: "A system of ideas intended to explain something."},
+                    {word: "validate", hint: "Check or prove validity", definition: "To check or prove the validity or accuracy of something."},
+                    {word: "paradigm", hint: "Typical pattern or model", definition: "A typical example or pattern of something; a model."},
+                    {word: "phenomenon", hint: "Observable fact or event", definition: "A fact or situation that is observed to exist or happen."}
+                ]
+            },
+            "general": {
+                "easy": [
+                    {word: "holiday", hint: "Day of festivity", definition: "A day of festivity or recreation when no work is done."},
+                    {word: "friendship", hint: "Relationship between friends", definition: "The emotions or conduct of friends; the state of being friends."},
+                    {word: "shopping", hint: "Buying goods", definition: "The action or activity of purchasing goods from stores."},
+                    {word: "weekend", hint: "Saturday and Sunday", definition: "Saturday and Sunday, especially regarded as a time for leisure."},
+                    {word: "family", hint: "Parents and children", definition: "A group consisting of parents and children living together."}
+                ],
+                "medium": [
+                    {word: "cuisine", hint: "Style of cooking", definition: "A style or method of cooking, especially as characteristic of a particular country or region."},
+                    {word: "leisure", hint: "Free time", definition: "Time when one is not working or occupied; free time."},
+                    {word: "accommodation", hint: "Lodging or housing", definition: "A room, group of rooms, or building in which someone may live or stay."},
+                    {word: "destination", hint: "Place to which someone is going", definition: "The place to which someone or something is going or being sent."},
+                    {word: "landmark", hint: "Prominent feature", definition: "An object or feature of a landscape or town that is easily seen and recognized from a distance."}
+                ],
+                "hard": [
+                    {word: "itinerary", hint: "Travel route plan", definition: "A planned route or journey."},
+                    {word: "heritage", hint: "Valued objects and qualities", definition: "Property that is or may be inherited; valued objects and qualities such as cultural traditions."},
+                    {word: "multicultural", hint: "Multiple cultural traditions", definition: "Relating to or containing several cultural or ethnic groups within a society."},
+                    {word: "sustainable", hint: "Able to be maintained", definition: "Able to be maintained at a certain rate or level without depletion."},
+                    {word: "volunteer", hint: "Person who offers service freely", definition: "A person who freely offers to take part in an enterprise or undertake a task."}
+                ]
+            }
         };
 
         // Hangman drawing stages
@@ -396,9 +508,14 @@
         // Game variables
         let chosenWord = "";
         let hint = "";
+        let definition = "";
         let attempts = 6;
+        let maxAttempts = 6;
         let guessedLetters = [];
         let currentMode = "academic";
+        let currentDifficulty = "medium";
+        let score = 0;
+        let hintsUsed = 0;
 
         // DOM elements
         const wordDisplay = document.getElementById("word-display");
@@ -406,16 +523,25 @@
         const attemptsDisplay = document.getElementById("attempts");
         const hintDisplay = document.getElementById("hint");
         const resetButton = document.getElementById("reset");
+        const hintButton = document.getElementById("hint-btn");
         const lettersContainer = document.getElementById("letters");
         const startBtn = document.getElementById("startBtn");
         const modeSelect = document.getElementById("mode");
+        const difficultySelect = document.getElementById("difficulty");
         const gameElement = document.getElementById("game");
         const hangmanDrawing = document.getElementById("hangman-drawing");
+        const scoreDisplay = document.getElementById("score");
+        const modal = document.getElementById("message-modal");
+        const modalTitle = document.getElementById("modal-title");
+        const modalMessage = document.getElementById("modal-message");
+        const modalButton = document.getElementById("modal-button");
 
         // Initialize the game
         function initGame() {
             startBtn.addEventListener("click", startGame);
             resetButton.addEventListener("click", startGame);
+            hintButton.addEventListener("click", showDefinition);
+            modalButton.addEventListener("click", closeModal);
             
             // Add keyboard support
             document.addEventListener("keydown", handleKeyPress);
@@ -423,14 +549,17 @@
 
         function startGame() {
             currentMode = modeSelect.value;
-            const words = wordData[currentMode];
+            currentDifficulty = difficultySelect.value;
+            const words = wordData[currentMode][currentDifficulty];
             const randomIndex = Math.floor(Math.random() * words.length);
             const selection = words[randomIndex];
             
             chosenWord = selection.word.toUpperCase();
             hint = selection.hint;
-            attempts = 6;
+            definition = selection.definition;
+            attempts = maxAttempts;
             guessedLetters = [];
+            hintsUsed = 0;
             
             // Update UI
             hintDisplay.textContent = "Hint: " + hint;
@@ -441,9 +570,8 @@
             displayWord();
             createLetterButtons();
             
-            // Show game, hide category selector
+            // Show game
             gameElement.classList.remove("hidden");
-            startBtn.textContent = "Change Category";
         }
 
         function displayWord() {
@@ -455,10 +583,8 @@
 
             // Check if player has won
             if (!display.includes("_")) {
-                setTimeout(() => {
-                    alert("🎉 Congratulations! You guessed the word: " + chosenWord);
-                    startGame();
-                }, 500);
+                calculateScore(true);
+                showModal("Congratulations!", `You guessed the word "${chosenWord}" correctly!<br><br>Definition: ${definition}`, "Next Word");
             }
         }
 
@@ -489,16 +615,56 @@
                 button.classList.add("incorrect");
                 
                 // Update hangman drawing
-                hangmanDrawing.textContent = hangmanStages[6 - attempts];
+                hangmanDrawing.textContent = hangmanStages[maxAttempts - attempts];
                 
                 // Check if player has lost
                 if (attempts <= 0) {
-                    setTimeout(() => {
-                        alert("💀 Game over! The word was: " + chosenWord);
-                        startGame();
-                    }, 500);
+                    calculateScore(false);
+                    showModal("Game Over", `The word was: "${chosenWord}"<br><br>Definition: ${definition}`, "Try Again");
                 }
             }
+        }
+
+        function showDefinition() {
+            if (hintsUsed === 0) {
+                alert(`Definition: ${definition}`);
+                hintsUsed++;
+            } else {
+                alert("You've already used your hint for this word!");
+            }
+        }
+
+        function calculateScore(isWin) {
+            if (isWin) {
+                // Base points for winning
+                let points = 100;
+                
+                // Bonus for difficulty
+                if (currentDifficulty === "medium") points += 50;
+                if (currentDifficulty === "hard") points += 100;
+                
+                // Bonus for remaining attempts
+                points += attempts * 10;
+                
+                // Penalty for using hints
+                points -= hintsUsed * 25;
+                
+                score += Math.max(points, 10); // Ensure at least 10 points
+            }
+            
+            scoreDisplay.textContent = score;
+        }
+
+        function showModal(title, message, buttonText) {
+            modalTitle.textContent = title;
+            modalMessage.innerHTML = message;
+            modalButton.textContent = buttonText;
+            modal.style.display = "flex";
+        }
+
+        function closeModal() {
+            modal.style.display = "none";
+            startGame();
         }
 
         function handleKeyPress(e) {
