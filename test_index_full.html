@@ -1,0 +1,735 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>IELTS Reading Vocabulary Practice</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            background: linear-gradient(135deg, #6e8efb, #a777e3);
+            padding: 20px;
+            color: #333;
+        }
+        
+        .container {
+            width: 100%;
+            max-width: 600px;
+            background: white;
+            border-radius: 16px;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
+            overflow: hidden;
+        }
+        
+        header {
+            background: #5a67d8;
+            color: white;
+            padding: 20px;
+            text-align: center;
+        }
+        
+        h1 {
+            font-size: 24px;
+            margin-bottom: 10px;
+        }
+        
+        .instructions {
+            background: #f8f9fa;
+            padding: 15px;
+            border-bottom: 1px solid #e9ecef;
+            font-size: 14px;
+            text-align: center;
+        }
+        
+        .game-area {
+            padding: 20px;
+        }
+        
+        .category-selector {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+        
+        select, button {
+            padding: 10px 15px;
+            border-radius: 6px;
+            border: 1px solid #ddd;
+            font-size: 16px;
+        }
+        
+        button {
+            background: #6e8efb;
+            color: white;
+            border: none;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+        
+        button:hover {
+            background: #5a7de3;
+        }
+        
+        button:disabled {
+            background: #cccccc;
+            cursor: not-allowed;
+        }
+        
+        #hint {
+            font-style: italic;
+            color: #666;
+            margin: 15px 0;
+            text-align: center;
+            padding: 10px;
+            background: #f8f9fa;
+            border-radius: 6px;
+            min-height: 60px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .hangman-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin: 15px 0;
+        }
+        
+        .hangman-drawing {
+            height: 120px;
+            font-family: monospace;
+            white-space: pre;
+            font-size: 16px;
+            line-height: 1.2;
+            text-align: center;
+            margin-bottom: 15px;
+        }
+        
+        #word-display {
+            font-size: 28px;
+            font-weight: bold;
+            color: #333;
+            text-align: center;
+            padding: 15px;
+            background: #f8f9fa;
+            border-radius: 6px;
+            margin-bottom: 15px;
+            min-height: 70px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-wrap: nowrap;
+            overflow-x: auto;
+            white-space: nowrap;
+            max-width: 100%;
+        }
+        
+        #word-display span {
+            display: inline-block;
+            min-width: 30px;
+            text-align: center;
+            border-bottom: 2px solid #333;
+            margin: 0 2px;
+        }
+        
+        #letters {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 6px;
+            margin: 15px 0;
+        }
+        
+        #letters button {
+            width: 36px;
+            height: 36px;
+            font-size: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .game-info {
+            display: flex;
+            justify-content: space-around;
+            margin: 20px 0;
+            font-size: 16px;
+        }
+        
+        .game-info > div {
+            background: #f8f9fa;
+            padding: 12px;
+            border-radius: 8px;
+            text-align: center;
+            min-width: 150px;
+        }
+        
+        .action-buttons {
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+        }
+        
+        .action-buttons button {
+            padding: 12px 20px;
+            font-size: 16px;
+        }
+        
+        .hidden {
+            display: none;
+        }
+        
+        .correct {
+            background-color: #d4edda !important;
+            color: #155724 !important;
+            border-color: #c3e6cb !important;
+        }
+        
+        .incorrect {
+            background-color: #f8d7da !important;
+            color: #721c24 !important;
+            border-color: #f5c6cb !important;
+        }
+        
+        footer {
+            text-align: center;
+            padding: 15px;
+            background: #f8f9fa;
+            border-top: 1px solid #e9ecef;
+            font-size: 12px;
+            color: #6c757d;
+        }
+        
+        @media (max-width: 600px) {
+            h1 {
+                font-size: 20px;
+            }
+            
+            #word-display {
+                font-size: 22px;
+                padding: 10px;
+                justify-content: flex-start;
+            }
+            
+            #word-display span {
+                min-width: 22px;
+                margin: 0 1px;
+            }
+            
+            .game-info {
+                flex-direction: column;
+                gap: 10px;
+            }
+            
+            .game-info > div {
+                width: 100%;
+            }
+            
+            .hangman-drawing {
+                height: 100px;
+                font-size: 14px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>IELTS Reading Vocabulary Practice</h1>
+            <p>Cambridge IELTS 17 Academic - Test 4</p>
+        </header>
+        
+        <div class="instructions">
+            <p>Select a reading passage and guess the vocabulary words</p>
+        </div>
+        
+        <div class="game-area">
+            <div class="category-selector">
+                <select id="passage-select">
+                    <option value="passage1">Passage 1: Bats to the Rescue</option>
+                    <option value="passage2">Passage 2: Education & Economic Growth</option>
+                    <option value="passage3">Passage 3: Blindfold Chess Champion</option>
+                </select>
+                <button id="startBtn">Start Game</button>
+            </div>
+            
+            <div id="game" class="hidden">
+                <div id="hint"></div>
+                
+                <div class="hangman-container">
+                    <div class="hangman-drawing" id="hangman-drawing"></div>
+                    <div id="word-display"></div>
+                </div>
+                
+                <div id="letters"></div>
+                
+                <div class="game-info">
+                    <div>
+                        <p>Wrong guesses: <span id="wrong-letters"></span></p>
+                    </div>
+                    <div>
+                        <p>Attempts left: <span id="attempts">6</span></p>
+                    </div>
+                </div>
+                
+                <div class="action-buttons">
+                    <button id="hint-btn">Hint</button>
+                    <button id="reset">New Word</button>
+                </div>
+            </div>
+        </div>
+        
+        <footer>
+            <p>Vocabulary from Cambridge IELTS 17 Academic - Test 4</p>
+        </footer>
+    </div>
+
+    <script>
+        // Vocabulary from all three reading passages
+        const readingVocabulary = {
+            passage1: [
+                {
+                    word: "conservation",
+                    hint: "The protection of animals, plants, and natural resources (noun)",
+                    context: "Relations between agriculture and ______ are strained in Madagascar."
+                },
+                {
+                    word: "deforestation",
+                    hint: "The clearing of forests (noun)",
+                    context: "Much forest destruction is fuelled by rice cultivation, leading to ______."
+                },
+                {
+                    word: "subsistence",
+                    hint: "Producing enough food for personal use only (adjective)",
+                    context: "Local ______ farmers face challenges from insect pests."
+                },
+                {
+                    word: "biodiversity",
+                    hint: "The variety of plant and animal life (noun)",
+                    context: "Habitat destruction results in devastating ______ loss on the island."
+                },
+                {
+                    word: "thriving",
+                    hint: "Growing or developing well (adjective)",
+                    context: "Some of the island's insectivorous bats are currently ______."
+                },
+                {
+                    word: "zoologist",
+                    hint: "A scientist who studies animals (noun)",
+                    context: "Ricardo Rocha is a ______ from the University of Cambridge."
+                },
+                {
+                    word: "indigenous",
+                    hint: "Native to a particular region (adjective)",
+                    context: "Several species of ______ bats help Madagascar's rice farmers."
+                },
+                {
+                    word: "pest",
+                    hint: "An insect or animal that damages crops (noun)",
+                    context: "Bats provide a valuable free service as biological ______ controllers."
+                },
+                {
+                    word: "ultrasonic",
+                    hint: "Sound waves with frequencies too high for humans to hear (adjective)",
+                    context: "Researchers used ______ recorders to study bat feeding habits."
+                },
+                {
+                    word: "echolocation",
+                    hint: "Using sound waves to locate objects (noun)",
+                    context: "Bats use ______ sequences called 'feeding buzzes' to target prey."
+                },
+                {
+                    word: "foraging",
+                    hint: "Searching widely for food (verb)",
+                    context: "Bats are preferentially ______ in man-made ecosystems like rice fields."
+                },
+                {
+                    word: "infestations",
+                    hint: "The presence of large numbers of pests (noun)",
+                    context: "Some crops are more susceptible to insect pest ______."
+                },
+                {
+                    word: "roost",
+                    hint: "A place where birds or bats rest or sleep (verb/noun)",
+                    context: "Deforestation is reducing the places where bats can ______."
+                }
+            ],
+            passage2: [
+                {
+                    word: "database",
+                    hint: "A structured set of data held in a computer (noun)",
+                    context: "A huge ______ about the lives of German villagers has been compiled."
+                },
+                {
+                    word: "conundrum",
+                    hint: "A confusing and difficult problem or question (noun)",
+                    context: "Economists have long puzzled over this ______ about education and growth."
+                },
+                {
+                    word: "literacy",
+                    hint: "The ability to read and write (noun)",
+                    context: "England had only mediocre ______ rates by European standards."
+                },
+                {
+                    word: "industrialise",
+                    hint: "To develop industries in a country or region (verb)",
+                    context: "Germany was slow to ______ despite excellent education levels."
+                },
+                {
+                    word: "inventories",
+                    hint: "Detailed lists of items, goods or property (noun)",
+                    context: "Handwritten ______ list over a million personal possessions."
+                },
+                {
+                    word: "guild",
+                    hint: "A medieval association of craftsmen or merchants (noun)",
+                    context: "The ______ prevented people from using their skills freely."
+                },
+                {
+                    word: "demographic",
+                    hint: "Relating to the structure of populations (adjective)",
+                    context: "Researchers created a ______ reconstruction of German communities."
+                },
+                {
+                    word: "descendants",
+                    hint: "People descended from a particular ancestor (noun)",
+                    context: "The database follows individuals and their ______ across 300 years."
+                },
+                {
+                    word: "sermon",
+                    hint: "A talk on a religious or moral subject (noun)",
+                    context: "Two women were chastised for reading books during a ______."
+                },
+                {
+                    word: "fine",
+                    hint: "A sum of money exacted as punishment (noun)",
+                    context: "Juliana was told to pay a ______ for breaking guild rules."
+                },
+                {
+                    word: "innovation",
+                    hint: "A new method, idea, or product (noun)",
+                    context: "Guilds held back even the simplest industrial ______."
+                },
+                {
+                    word: "threshold",
+                    hint: "A level, point, or value at which something happens (noun)",
+                    context: "Researchers asked if there was a ______ level of education needed for growth."
+                },
+                {
+                    word: "monopolies",
+                    hint: "Exclusive control of a commodity or service (noun)",
+                    context: "Guilds legislated against anything that undermined their ______."
+                }
+            ],
+            passage3: [
+                {
+                    word: "blindfolded",
+                    hint: "Having the eyes covered with a cloth (adjective)",
+                    context: "Gareyev will play chess ______ against nearly 50 opponents."
+                },
+                {
+                    word: "simultaneously",
+                    hint: "At the same time (adverb)",
+                    context: "Gareyev played 33 games ______ in his head during a marathon."
+                },
+                {
+                    word: "prowess",
+                    hint: "Skill or expertise in a particular activity (noun)",
+                    context: "Gareyev's ______ has drawn interest from beyond the chess community."
+                },
+                {
+                    word: "tournament",
+                    hint: "A series of contests between competitors (noun)",
+                    context: "He entered his first chess ______ at eight years old."
+                },
+                {
+                    word: "grandmaster",
+                    hint: "A chess player of the highest class (noun)",
+                    context: "At 16, he became Asia's youngest ever chess ______."
+                },
+                {
+                    word: "simultaneous",
+                    hint: "Occurring or operating at the same time (adjective)",
+                    context: "Najdorf played 45 ______ blindfold games in 1947."
+                },
+                {
+                    word: "patterns",
+                    hint: "Repeated decorative designs (noun)",
+                    context: "Players develop a memory for the ______ the pieces make."
+                },
+                {
+                    word: "memorised",
+                    hint: "Committed to memory; learned by heart (verb)",
+                    context: "Positions of each piece on every board must be ______."
+                },
+                {
+                    word: "fragmented",
+                    hint: "Broken into small or separate parts (adjective)",
+                    context: "When tired, his recall can become ______."
+                },
+                {
+                    word: "network",
+                    hint: "An interconnected system (noun)",
+                    context: "Scans showed greater communication between parts of Gareyev's brain ______."
+                },
+                {
+                    word: "visual",
+                    hint: "Relating to seeing or sight (adjective)",
+                    context: "Gareyev's ______ network is more highly connected to other brain parts."
+                },
+                {
+                    word: "extraordinary",
+                    hint: "Very unusual or remarkable (adjective)",
+                    context: "Brain scans may hold clues to Gareyev's ______ ability."
+                },
+                {
+                    word: "obsession",
+                    hint: "An idea or thought that continually preoccupies someone (noun)",
+                    context: "He said, 'I miss having an ______' about his dedication to chess."
+                }
+            ]
+        };
+
+        // Hangman drawing stages
+        const hangmanStages = [
+            `
+         -----
+         |   |
+             |
+             |
+             |
+             |
+      ----------
+            `,
+            `
+         -----
+         |   |
+         O   |
+             |
+             |
+             |
+      ----------
+            `,
+            `
+         -----
+         |   |
+         O   |
+         |   |
+             |
+             |
+      ----------
+            `,
+            `
+         -----
+         |   |
+         O   |
+        /|   |
+             |
+             |
+      ----------
+            `,
+            `
+         -----
+         |   |
+         O   |
+        /|\\  |
+             |
+             |
+      ----------
+            `,
+            `
+         -----
+         |   |
+         O   |
+        /|\\  |
+        /    |
+             |
+      ----------
+            `,
+            `
+         -----
+         |   |
+         O   |
+        /|\\  |
+        / \\  |
+             |
+      ----------
+            `
+        ];
+
+        // Game variables
+        let currentWord = "";
+        let currentHint = "";
+        let currentContext = "";
+        let attempts = 6;
+        let guessedLetters = [];
+        let currentWordIndex = 0;
+        let currentPassage = "passage1";
+
+        // DOM elements
+        const wordDisplay = document.getElementById("word-display");
+        const wrongLettersElement = document.getElementById("wrong-letters");
+        const attemptsDisplay = document.getElementById("attempts");
+        const hintDisplay = document.getElementById("hint");
+        const resetButton = document.getElementById("reset");
+        const hintButton = document.getElementById("hint-btn");
+        const lettersContainer = document.getElementById("letters");
+        const startBtn = document.getElementById("startBtn");
+        const gameElement = document.getElementById("game");
+        const hangmanDrawing = document.getElementById("hangman-drawing");
+        const passageSelect = document.getElementById("passage-select");
+
+        // Initialize the game
+        function initGame() {
+            startBtn.addEventListener("click", startGame);
+            resetButton.addEventListener("click", startGame);
+            hintButton.addEventListener("click", showContext);
+            passageSelect.addEventListener("change", updatePassage);
+            
+            // Add keyboard support
+            document.addEventListener("keydown", handleKeyPress);
+        }
+
+        function updatePassage() {
+            currentPassage = passageSelect.value;
+        }
+
+        function startGame() {
+            // Get the selected passage
+            const passageData = readingVocabulary[currentPassage];
+            
+            // Select a word from the vocabulary list
+            const wordData = passageData[currentWordIndex];
+            currentWord = wordData.word.toUpperCase();
+            currentHint = wordData.hint;
+            currentContext = wordData.context;
+            attempts = 6;
+            guessedLetters = [];
+            
+            // Update UI
+            hintDisplay.textContent = currentHint;
+            attemptsDisplay.textContent = attempts;
+            wrongLettersElement.textContent = "";
+            hangmanDrawing.textContent = hangmanStages[0];
+            
+            displayWord();
+            createLetterButtons();
+            
+            // Show game, hide start button
+            gameElement.classList.remove("hidden");
+            startBtn.style.display = "none";
+            
+            // Move to next word for next round
+            currentWordIndex = (currentWordIndex + 1) % passageData.length;
+        }
+
+        function displayWord() {
+            // Clear previous word display
+            wordDisplay.innerHTML = "";
+            
+            // Create the right number of letter placeholders
+            for (let i = 0; i < currentWord.length; i++) {
+                const letterSpan = document.createElement("span");
+                const letter = currentWord[i];
+                
+                if (guessedLetters.includes(letter)) {
+                    letterSpan.textContent = letter;
+                } else {
+                    letterSpan.textContent = "";
+                }
+                
+                wordDisplay.appendChild(letterSpan);
+            }
+
+            // Check if player has won
+            const revealedLetters = Array.from(wordDisplay.children)
+                .filter(el => el.textContent !== "")
+                .length;
+                
+            if (revealedLetters === currentWord.length) {
+                setTimeout(() => {
+                    alert(`🎉 Correct! The word is "${currentWord}"\n\nContext: ${currentContext}`);
+                    startGame();
+                }, 500);
+            }
+        }
+
+        function createLetterButtons() {
+            lettersContainer.innerHTML = "";
+            for (let i = 65; i <= 90; i++) {
+                const letter = String.fromCharCode(i);
+                const button = document.createElement("button");
+                button.textContent = letter;
+                button.addEventListener("click", () => guessLetter(letter, button));
+                lettersContainer.appendChild(button);
+            }
+        }
+
+        function guessLetter(letter, button) {
+            button.disabled = true;
+            
+            if (currentWord.includes(letter)) {
+                // Correct guess
+                guessedLetters.push(letter);
+                button.classList.add("correct");
+                displayWord();
+            } else {
+                // Incorrect guess
+                attempts--;
+                attemptsDisplay.textContent = attempts;
+                wrongLettersElement.textContent += letter + " ";
+                button.classList.add("incorrect");
+                
+                // Update hangman drawing
+                hangmanDrawing.textContent = hangmanStages[6 - attempts];
+                
+                // Check if player has lost
+                if (attempts <= 0) {
+                    setTimeout(() => {
+                        alert(`💀 Game over! The word was "${currentWord}"\n\nContext: ${currentContext}`);
+                        startGame();
+                    }, 500);
+                }
+            }
+        }
+
+        function showContext() {
+            alert(`Word in context:\n\n"${currentContext}"`);
+        }
+
+        function handleKeyPress(e) {
+            // Only handle key presses if game is active
+            if (gameElement.classList.contains("hidden")) return;
+            
+            // Check if key is a letter (A-Z or a-z)
+            if (e.key.length === 1 && e.key.match(/[a-z]/i)) {
+                const letter = e.key.toUpperCase();
+                const button = Array.from(lettersContainer.children).find(
+                    btn => btn.textContent === letter && !btn.disabled
+                );
+                
+                if (button) {
+                    guessLetter(letter, button);
+                }
+            }
+        }
+
+        // Initialize the game when page loads
+        window.onload = initGame;
+    </script>
+</body>
+</html>
